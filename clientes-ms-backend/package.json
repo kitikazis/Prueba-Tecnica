@@ -1,0 +1,21 @@
+{
+  "name": "clientes-ms-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@hapi/hapi": "^21.4.4",
+    "amqplib": "^0.10.9",
+    "axios": "^1.13.2",
+    "joi": "^18.0.1",
+    "mysql2": "^3.15.3",
+    "redis": "^5.9.0"
+  }
+}
