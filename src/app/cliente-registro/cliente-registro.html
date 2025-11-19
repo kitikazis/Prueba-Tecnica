@@ -1,0 +1,196 @@
+<div class="container-fluid vh-100 overflow-hidden bg-black text-white">
+  <div class="row h-100">
+    <div class="col-md-7 col-lg-8 p-0 d-none d-md-block position-relative promo-bg">
+      <div class="promo-overlay d-flex align-items-end p-5">
+        <div class="promo-content mb-4">
+          <h1 class="display-5 fw-bold fst-italic text-uppercase mb-1">
+            ¡LaFija es que vas a ganar!
+          </h1>
+          <div class="bg-success d-inline-block px-3 py-1 skew-box">
+            <h3 class="h4 fw-bold m-0 text-uppercase fst-italic">
+              Regístrate y elige tu bono de bienvenida
+            </h3>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="col-md-5 col-lg-4 bg-dark-panel d-flex flex-column position-relative custom-scrollbar"
+    >
+      <button
+        class="btn btn-link text-secondary position-absolute top-0 end-0 m-3"
+        (click)="goHome()"
+      >
+        <i class="bi bi-x-circle fs-4"></i>
+      </button>
+
+      <div class="p-4 flex-grow-1">
+        <div class="text-center mb-3">
+          <h3 class="text-success fw-bold fst-italic">
+            <i class="bi bi-lightning-fill"></i> LaFija.com
+          </h3>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-end mb-3">
+          <div>
+            <h4 class="fw-bold m-0">Regístrate</h4>
+            <small class="text-secondary">Completa tus datos personales</small>
+          </div>
+          <div class="step-indicator d-flex align-items-center">
+            <div class="step active">1</div>
+            <div class="step-line"></div>
+            <div class="step">2</div>
+          </div>
+        </div>
+
+        <form [formGroup]="registroForm" (ngSubmit)="onSubmit()">
+          <small class="text-success d-block mb-3">(*) Campo obligatorio</small>
+
+          <div class="row g-2 mb-2">
+            <div class="col-4">
+              <label class="form-label small text-secondary">Documento *</label>
+              <select class="form-select form-dark" formControlName="docType">
+                <option value="DNI">DNI</option>
+                <option value="CE">CE</option>
+              </select>
+            </div>
+            <div class="col-8">
+              <label class="form-label small text-secondary">N° de documento *</label>
+              <input
+                type="text"
+                class="form-control form-dark"
+                formControlName="docNumber"
+                placeholder="Ej. 77665544"
+              />
+            </div>
+          </div>
+
+          <div class="info-box mb-3 d-flex align-items-start gap-2">
+            <i class="bi bi-info-circle text-orange mt-1"></i>
+            <small class="text-orange"
+              >Ingresa tus <span class="fw-bold">nombres y apellidos</span> exactamente como se
+              muestran en tu documento.</small
+            >
+          </div>
+
+          <div class="row g-2 mb-3">
+            <div class="col-6">
+              <label class="form-label small text-secondary">Nombres *</label>
+              <input type="text" class="form-control form-dark" formControlName="firstName" />
+            </div>
+            <div class="col-6">
+              <label class="form-label small text-secondary">Apellidos *</label>
+              <input type="text" class="form-control form-dark" formControlName="lastName" />
+            </div>
+          </div>
+
+          <label class="form-label small text-secondary">Fecha de nacimiento *</label>
+          <div class="row g-2 mb-3">
+            <div class="col-4">
+              <select class="form-select form-dark" formControlName="birthYear">
+                <option value="" disabled selected>Año</option>
+                @for(y of years; track y){
+                <option [value]="y">{{ y }}</option>
+                }
+              </select>
+            </div>
+            <div class="col-4">
+              <select class="form-select form-dark" formControlName="birthMonth">
+                <option value="" disabled selected>Mes</option>
+                @for(m of months; track m.val){
+                <option [value]="m.val">{{ m.name }}</option>
+                }
+              </select>
+            </div>
+            <div class="col-4">
+              <select class="form-select form-dark" formControlName="birthDay">
+                <option value="" disabled selected>Día</option>
+                @for(d of days; track d){
+                <option [value]="d">{{ d }}</option>
+                }
+              </select>
+            </div>
+          </div>
+
+          <label class="form-label small text-secondary">Lugar de residencia</label>
+          <div class="row g-2 mb-3">
+            <div class="col-4">
+              <select class="form-select form-dark" formControlName="department">
+                <option value="" selected>Dpto *</option>
+                <option value="LIMA">Lima</option>
+              </select>
+            </div>
+            <div class="col-4">
+              <select class="form-select form-dark" formControlName="province">
+                <option value="" selected>Prov *</option>
+                <option value="LIMA">Lima</option>
+              </select>
+            </div>
+            <div class="col-4">
+              <select class="form-select form-dark" formControlName="district">
+                <option value="" selected>Dist *</option>
+                <option value="MIRAFLORES">Miraflores</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row g-2 mb-3">
+            <div class="col-3">
+              <label class="form-label small text-secondary">Código *</label>
+              <input
+                type="text"
+                class="form-control form-dark text-center"
+                formControlName="phoneCode"
+                readonly
+              />
+            </div>
+            <div class="col-9">
+              <label class="form-label small text-secondary">Número de celular *</label>
+              <input
+                type="tel"
+                class="form-control form-dark"
+                formControlName="phoneNumber"
+                placeholder="999 999 999"
+              />
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label small text-secondary">Género *</label>
+            <select class="form-select form-dark" formControlName="gender">
+              <option value="" disabled selected>- Selecciona un género</option>
+              <option value="M">Masculino</option>
+              <option value="F">Femenino</option>
+            </select>
+          </div>
+
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-dark border-secondary px-3" (click)="goHome()">
+              <i class="bi bi-chevron-left"></i>
+            </button>
+            <button
+              type="submit"
+              class="btn btn-success w-100 fw-bold skew-button text-uppercase"
+              [disabled]="registroForm.invalid"
+            >
+              Continuar
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div
+        class="p-3 d-flex justify-content-between text-secondary text-xs border-top border-secondary-subtle"
+      >
+        <a href="#" class="text-decoration-none text-secondary"
+          ><i class="bi bi-chat-dots"></i> ¿Necesita Ayuda?</a
+        >
+        <span
+          >¿Ya tienes cuenta?
+          <a href="#" class="text-success fw-bold text-decoration-none">Inicia sesión aquí</a></span
+        >
+      </div>
+    </div>
+  </div>
+</div>

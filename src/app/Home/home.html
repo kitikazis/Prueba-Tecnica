@@ -1,0 +1,88 @@
+<div class="container-fluid vh-100 overflow-hidden bg-black text-white">
+  <div class="row h-100">
+    <div class="col-md-7 col-lg-8 p-0 d-none d-md-block position-relative promo-bg">
+      <div class="promo-overlay d-flex align-items-end p-5">
+        <div class="promo-content mb-4">
+          <h1 class="display-5 fw-bold fst-italic text-uppercase mb-1">
+            ¡LaFija es que vas a ganar!
+          </h1>
+          <div class="bg-success d-inline-block px-3 py-1 skew-box">
+            <h3 class="h4 fw-bold m-0 text-uppercase fst-italic">
+              Regístrate y elige tu bono de bienvenida
+            </h3>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="col-md-5 col-lg-4 bg-dark-panel d-flex flex-column position-relative custom-scrollbar"
+    >
+      <button class="btn btn-link text-secondary position-absolute top-0 end-0 m-3">
+        <i class="bi bi-x-circle fs-4"></i>
+      </button>
+
+      <div class="p-4 flex-grow-1 d-flex flex-column justify-content-center">
+        <div class="text-center mb-4">
+          <h2 class="text-success fw-bold fst-italic">
+            <i class="bi bi-lightning-fill"></i> LaFija.com
+          </h2>
+        </div>
+
+        <h3 class="fw-bold mb-1">Empieza tu registro</h3>
+        <p class="text-secondary mb-4">Eligiendo tu bono de bienvenida</p>
+
+        <div class="d-flex flex-column gap-3">
+          @for (bonus of bonuses; track bonus.id) {
+          <div
+            class="bonus-card position-relative p-3 rounded cursor-pointer"
+            [class.active]="selectedBonus() === bonus.id"
+            (click)="selectBonus(bonus.id)"
+          >
+            <div
+              class="option-number position-absolute top-0 start-0 text-white fw-bold d-flex align-items-center justify-content-center"
+              [class.bg-orange]="bonus.id === 1"
+              [class.bg-secondary]="bonus.id !== 1"
+            >
+              {{ bonus.id }}
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center ps-4">
+              <div>
+                <h5 class="m-0 fw-bold" [class.text-success]="selectedBonus() === bonus.id">
+                  {{ bonus.title }}
+                </h5>
+                <small class="text-secondary">{{ bonus.subtitle }}</small>
+              </div>
+              @if(bonus.icon) {
+              <div class="bonus-icon fs-2">{{ bonus.icon }}</div>
+              }
+            </div>
+
+            @if(selectedBonus() === bonus.id) {
+            <div class="active-indicator"></div>
+            }
+          </div>
+          }
+        </div>
+
+        <button
+          (click)="irAlRegistro()"
+          class="btn btn-success w-100 mt-5 py-3 fw-bold text-uppercase rounded-1 skew-button shadow-lg"
+        >
+          Continuar
+        </button>
+      </div>
+
+      <div class="p-3 d-flex justify-content-between text-secondary text-xs">
+        <a href="#" class="text-decoration-none text-secondary">
+          <i class="bi bi-chat-dots"></i> ¿Necesita Ayuda?
+        </a>
+        <span>
+          ¿Ya tienes cuenta?
+          <a href="#" class="text-success text-decoration-none fw-bold">Inicia sesión aquí</a>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>

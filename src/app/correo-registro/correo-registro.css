@@ -1,0 +1,87 @@
+/* VARIABLES GLOBALES */
+:host {
+    --brand-green: #00e676;
+    --bg-panel: #1e1e1e;
+    --input-bg: #2b2b2b;
+    --orange-alert: #ff6d00;
+}
+
+/* ESTILOS BASE (Iguales a los anteriores) */
+.promo-bg {
+    background: url('https://images.unsplash.com/photo-1596838132731-3301c3fd4317?q=80&w=2070&auto=format&fit=crop') no-repeat center center;
+    background-size: cover;
+    border-right: 5px solid var(--brand-green);
+}
+.promo-overlay { background: linear-gradient(to top, rgba(0,0,0,0.95), rgba(0,0,0,0.2)); height: 100%; }
+.bg-dark-panel { background-color: var(--bg-panel); overflow-y: auto; }
+.skew-box { transform: skewX(-10deg); }
+
+/* INPUTS OSCUROS */
+.form-dark {
+    background-color: var(--input-bg);
+    border: 1px solid #444;
+    color: #fff;
+}
+.form-dark:focus {
+    background-color: var(--input-bg);
+    border-color: var(--brand-green);
+    box-shadow: 0 0 0 0.25rem rgba(0, 230, 118, 0.15);
+    color: #fff;
+}
+/* Quitar borde al botón del ojo cuando tiene focus */
+.btn-dark.form-dark:focus { box-shadow: none; border-color: #444; }
+
+
+/* --- STEPPER PERSONALIZADO (Paso 2) --- */
+.step-indicator { gap: 8px; }
+.step {
+    width: 28px; height: 28px; border-radius: 50%; 
+    display: flex; align-items: center; justify-content: center;
+    font-weight: bold; font-size: 0.8rem; border: 1px solid #555;
+    color: #777; background-color: #333;
+}
+/* Estilo para el paso completado (El check) */
+.step.completed {
+    background-color: var(--brand-green);
+    color: #000;
+    border-color: var(--brand-green);
+}
+/* Estilo para el paso activo (El número 2) */
+.step.active {
+    background-color: transparent; /* En la imagen el 2 activo es contorno verde */
+    color: var(--brand-green);
+    border: 1px solid var(--brand-green);
+    box-shadow: 0 0 5px rgba(0, 230, 118, 0.4);
+}
+.step-line { width: 30px; height: 2px; background-color: #555; }
+.step-line.active { background-color: var(--brand-green); }
+
+
+/* --- SWITCH TOGGLE (VERDE) --- */
+.form-switch .form-check-input {
+    background-color: #444;
+    border-color: #555;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='rgba%28255, 255, 255, 0.5%29'/%3e%3c/svg%3e");
+}
+.form-switch .form-check-input:focus {
+    border-color: var(--brand-green);
+    box-shadow: 0 0 0 0.25rem rgba(0, 230, 118, 0.25);
+}
+.form-switch .form-check-input:checked {
+    background-color: var(--brand-green);
+    border-color: var(--brand-green);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23000'/%3e%3c/svg%3e");
+}
+
+/* TEXTOS Y BOTONES */
+.text-success { color: var(--brand-green) !important; }
+.x-small { font-size: 0.75rem; }
+.text-xs { font-size: 0.8rem; }
+
+.btn-success {
+    background-color: var(--brand-green); border: none; color: #000;
+}
+.btn-success:hover:not(:disabled) {
+    background-color: #00c853; transform: scale(1.02);
+}
+.btn-success:disabled { opacity: 0.5; cursor: not-allowed; }

@@ -1,0 +1,167 @@
+<div class="container-fluid vh-100 overflow-hidden bg-black text-white">
+  <div class="row h-100">
+    <div class="col-md-7 col-lg-8 p-0 d-none d-md-block position-relative promo-bg">
+      <div class="promo-overlay d-flex align-items-end p-5">
+        <div class="promo-content mb-4">
+          <h1 class="display-5 fw-bold fst-italic text-uppercase mb-1">
+            ¡LaFija es que vas a ganar!
+          </h1>
+          <div class="bg-success d-inline-block px-3 py-1 skew-box">
+            <h3 class="h4 fw-bold m-0 text-uppercase fst-italic">
+              Regístrate y elige tu bono de bienvenida
+            </h3>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="col-md-5 col-lg-4 bg-dark-panel d-flex flex-column position-relative custom-scrollbar"
+    >
+      <div class="p-4 flex-grow-1">
+        <div class="text-center mb-3">
+          <h3 class="text-success fw-bold fst-italic">
+            <i class="bi bi-lightning-fill"></i> LaFija.com
+          </h3>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-end mb-4">
+          <div>
+            <h3 class="fw-bold m-0">¡Un paso más!</h3>
+            <small class="text-secondary">Completa tus datos de acceso</small>
+          </div>
+
+          <div class="step-indicator d-flex align-items-center">
+            <div class="step completed"><i class="bi bi-check-lg"></i></div>
+            <div class="step-line active"></div>
+            <div class="step active">2</div>
+          </div>
+        </div>
+
+        <form [formGroup]="correoForm" (ngSubmit)="onSubmit()">
+          <small class="text-success d-block mb-3">(*) Campo obligatorio</small>
+
+          <div class="mb-3">
+            <label class="form-label small text-secondary">Correo *</label>
+            <input
+              type="email"
+              class="form-control form-dark"
+              formControlName="email"
+              placeholder="ejemplo@correo.com"
+            />
+
+            <div
+              *ngIf="correoForm.get('email')?.touched && correoForm.get('email')?.invalid"
+              class="text-danger x-small mt-1"
+            >
+              Ingresa un correo válido.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label small text-secondary">Contraseña *</label>
+            <div class="input-group">
+              <input
+                [type]="showPassword() ? 'text' : 'password'"
+                class="form-control form-dark border-end-0"
+                formControlName="password"
+              />
+              <button
+                type="button"
+                class="btn btn-dark border-start-0 form-dark text-secondary"
+                (click)="togglePassword()"
+              >
+                <i
+                  class="bi"
+                  [class.bi-eye]="showPassword()"
+                  [class.bi-eye-slash]="!showPassword()"
+                ></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label small text-secondary">Confirmar contraseña *</label>
+            <div class="input-group">
+              <input
+                [type]="showConfirmPassword() ? 'text' : 'password'"
+                class="form-control form-dark border-end-0"
+                formControlName="confirmPassword"
+              />
+              <button
+                type="button"
+                class="btn btn-dark border-start-0 form-dark text-secondary"
+                (click)="toggleConfirm()"
+              >
+                <i
+                  class="bi"
+                  [class.bi-eye]="showConfirmPassword()"
+                  [class.bi-eye-slash]="!showConfirmPassword()"
+                ></i>
+              </button>
+            </div>
+            <div
+              *ngIf="correoForm.errors?.['mismatch'] && correoForm.get('confirmPassword')?.touched"
+              class="text-danger x-small mt-1"
+            >
+              Las contraseñas no coinciden.
+            </div>
+          </div>
+
+          <div class="mb-4 d-flex align-items-start gap-3">
+            <div class="form-check form-switch pt-1">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="termsSwitch"
+                formControlName="terms"
+                style="cursor: pointer"
+              />
+            </div>
+            <label
+              class="form-check-label x-small text-secondary lh-sm"
+              for="termsSwitch"
+              style="cursor: pointer"
+            >
+              He leído y acepto los
+              <a href="#" class="text-success text-decoration-underline">términos y condiciones</a>,
+              la
+              <a href="#" class="text-success text-decoration-underline">Política de privacidad</a>,
+              la
+              <a href="#" class="text-success text-decoration-underline">Política de cookies</a> y
+              declaro bajo juramento que no soy una
+              <a href="#" class="text-success text-decoration-underline"
+                >Persona políticamente expuesta</a
+              >.
+            </label>
+          </div>
+
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-dark border-secondary px-3" (click)="goBack()">
+              <i class="bi bi-chevron-left"></i>
+            </button>
+            <button
+              type="submit"
+              class="btn btn-success w-100 fw-bold skew-button text-uppercase"
+              [disabled]="correoForm.invalid"
+            >
+              Registrar
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div
+        class="p-3 d-flex justify-content-between text-secondary text-xs border-top border-secondary-subtle"
+      >
+        <a href="#" class="text-decoration-none text-secondary"
+          ><i class="bi bi-chat-dots"></i> ¿Necesita Ayuda?</a
+        >
+        <span
+          >¿Ya tienes cuenta?
+          <a href="#" class="text-success fw-bold text-decoration-none">Inicia sesión aquí</a></span
+        >
+      </div>
+    </div>
+  </div>
+</div>

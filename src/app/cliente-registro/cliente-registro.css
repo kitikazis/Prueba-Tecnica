@@ -1,0 +1,146 @@
+/* Variables CSS locales */
+:host {
+    --brand-green: #00e676; /* Verde Neón */
+    --bg-dark: #121212;
+    --bg-panel: #1e1e1e;
+    --orange-accent: #ff6d00;
+    --dark-input-bg: #2b2b2b; /* Fondo de inputs oscuro */
+    --warning-orange: #f57f17; /* Naranja para el aviso de info */
+}
+
+/* Fondo Izquierdo con imagen */
+.promo-bg {
+    background: url('https://images.unsplash.com/photo-1596838132731-3301c3fd4317?q=80&w=2070&auto=format&fit=crop') no-repeat center center;
+    background-size: cover;
+    border-right: 5px solid var(--brand-green);
+}
+
+.promo-overlay {
+    background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.2) 100%);
+    height: 100%;
+    width: 100%;
+}
+
+/* Panel Derecho Oscuro */
+.bg-dark-panel {
+    background-color: var(--bg-panel);
+    box-shadow: -10px 0 30px rgba(0,0,0,0.8);
+    z-index: 10;
+    /* Estilos para el scrollbar personalizado */
+    overflow-y: auto; /* Habilitar scroll */
+}
+
+/* Scrollbar personalizado */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: var(--bg-panel);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Estilo inclinado para textos (Italic + Skew) */
+.skew-box {
+    transform: skewX(-10deg);
+}
+
+/* Colores de texto y botones */
+.text-success {
+    color: var(--brand-green) !important;
+}
+
+.btn-success {
+    background-color: var(--brand-green);
+    border: none;
+    color: #000;
+    font-weight: 800;
+    letter-spacing: 1px;
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.btn-success:hover:not(:disabled) {
+    background-color: #00c853;
+    transform: scale(1.02);
+    box-shadow: 0 0 15px rgba(0, 230, 118, 0.6);
+}
+
+.btn-success:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background-color: #008f4c; /* Un verde más oscuro para deshabilitado */
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.text-xs {
+    font-size: 0.8rem;
+}
+
+.text-orange {
+    color: var(--orange-accent) !important;
+}
+
+/* --- Estilos de Formulario --- */
+.form-control-dark, .form-select-dark {
+    background-color: var(--dark-input-bg);
+    border-color: #404040;
+    color: white;
+}
+
+.form-control-dark::placeholder, .form-select-dark option {
+    color: #aaa;
+}
+
+.form-control-dark:focus, .form-select-dark:focus {
+    background-color: var(--dark-input-bg);
+    border-color: var(--brand-green);
+    box-shadow: 0 0 0 0.25rem rgba(0, 230, 118, 0.25);
+    color: white;
+}
+
+/* Estilo para el mensaje de información (alerta naranja) */
+.alert-warning-custom {
+    background-color: rgba(245, 127, 23, 0.15); /* Naranja translúcido */
+    color: var(--warning-orange);
+    border: 1px solid var(--warning-orange);
+    border-radius: 0.25rem;
+    font-size: 0.9rem;
+}
+
+/* Indicador de pasos (1, 2) */
+.step-indicator {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #444;
+    color: #bbb;
+    font-weight: bold;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.step-indicator.active-step {
+    background-color: var(--brand-green);
+    color: black;
+}
+
+.step-line {
+    flex-grow: 1;
+    height: 2px;
+    background-color: #444;
+    margin: 0 8px;
+}
