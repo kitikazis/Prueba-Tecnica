@@ -12,7 +12,7 @@ const CLIENTES_DB_CONFIG = {
     host: 'localhost',
     user: 'root', 
     password: '', 
-    database: 'seguridaddb', // CORRECCIÓN: Usar la DB de Clientes (clientesDB)
+    database: 'seguridad_db', // CORRECCIÓN: Usar la DB de Clientes (clientesDB)
     port: 3306 
 };
 
