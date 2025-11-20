@@ -1,0 +1,107 @@
+version: '3.8'
+
+# Define la red interna para que todos los servicios se comuniquen por nombre
+networks:
+  ms-network:
+    driver: bridge
+
+services:
+  # -----------------------------------------------------
+  # 1. INFRAESTRUCTURA (Bases de Datos, Caché, Mensajería)
+  # -----------------------------------------------------
+  ms-mysql:
+    image: mysql:8.0
+    container_name: ms-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: clientesDB # Puedes crear todas las DBs aquí o manejar la creación inicial en el entrypoint
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - ms-network
+    restart: always
+
+  ms-redis:
+    image: redis:6.2-alpine
+    container_name: ms-redis
+    networks:
+      - ms-network
+    restart: always
+
+  ms-rabbitmq:
+    image: rabbitmq:3-management
+    container_name: ms-rabbitmq
+    ports:
+      - "15672:15672" # Puerto de la consola de administración
+    networks:
+      - ms-network
+    restart: always
+
+  # -----------------------------------------------------
+  # 2. MICROSERVICIOS BACKEND (Hapi)
+  # -----------------------------------------------------
+  ms-security:
+    build: 
+      context: ./seguridad-ms
+      dockerfile: Dockerfile
+    container_name: ms-security
+    env_file: ./.env # Carga variables del archivo .env
+    ports:
+      - "${SECURITY_MS_PORT}:${SECURITY_MS_PORT}"
+    networks:
+      - ms-network
+    depends_on:
+      ms-mysql:
+        condition: service_started
+
+  ms-clients:
+    build: 
+      context: ./clientes-ms-backend
+      dockerfile: Dockerfile
+    container_name: ms-clients
+    env_file: ./.env
+    ports:
+      - "${CLIENTS_MS_PORT}:${CLIENTS_MS_PORT}"
+    networks:
+      - ms-network
+    depends_on: # Depende de la infraestructura y el MS de seguridad
+      ms-security:
+        condition: service_started
+      ms-mysql:
+        condition: service_started
+      ms-redis:
+        condition: service_started
+      ms-rabbitmq:
+        condition: service_started
+
+  ms-mail:
+    build: 
+      context: ./correos-ms
+      dockerfile: Dockerfile
+    container_name: ms-mail
+    env_file: ./.env
+    ports:
+      - "${MAIL_MS_PORT}:${MAIL_MS_PORT}"
+    networks:
+      - ms-network
+    depends_on:
+      ms-mysql:
+        condition: service_started
+      ms-rabbitmq:
+        condition: service_started
+      
+  # -----------------------------------------------------
+  # 3. FRONTEND (Angular)
+  # -----------------------------------------------------
+  ms-frontend:
+    build: 
+      context: ./clientes-angular-frontend
+      dockerfile: Dockerfile
+    container_name: ms-frontend
+    ports:
+      - "80:80" # El frontend se accede por el puerto 80 (HTTP estándar)
+    networks:
+      - ms-network
+    
+volumes:
+  mysql-data:

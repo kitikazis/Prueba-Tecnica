@@ -10,7 +10,7 @@ const CORREOS_DB_CONFIG = {
     user: 'root', 
     password: '', 
     database: 'correosDB', // Base de datos privada del MS Correos
-    port: 3306 
+    port: 8080 
 };
 
 const RABBITMQ_URI = 'amqp://localhost';

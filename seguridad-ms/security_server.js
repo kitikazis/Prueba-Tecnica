@@ -1,5 +1,5 @@
 'use strict';
-
+require('dotenv').config({ path: '../.env' });
 const Hapi = require('@hapi/hapi');
 const Joi = require('joi');
 const mysql = require('mysql2/promise'); // Cliente MySQL con soporte para async/await
@@ -9,8 +9,8 @@ const DB_CONFIG = {
     host: 'localhost',
     user: 'root', 
     password: '', 
-    database: 'seguridaddb', 
-    port: 3306 
+    database: 'seguridad_db', 
+    port: 8080 
 };
 
 let dbConnection;

@@ -12,8 +12,8 @@ const CLIENTES_DB_CONFIG = {
     host: 'localhost',
     user: 'root', 
     password: '', 
-    database: 'seguridad_db', // CORRECCIÓN: Usar la DB de Clientes (clientesDB)
-    port: 3306 
+    database: 'clientes_db', // CORRECCIÓN: Usar la DB de Clientes (clientesDB)
+    port: 8080 
 };
 
 const SECURITY_MS_URL = 'http://localhost:3001/api/security/validate';
@@ -30,10 +30,10 @@ let rabbitMqChannel;
 
 const cargarParametrosARedis = async () => {
     // Busca los parámetros en la tabla de MySQL
-    const [rows] = await dbConnectionClientes.execute('SELECT nombre_parametro, valor FROM parametros_globales');
+    const [rows] = await dbConnectionClientes.execute('SELECT nombre, valor FROM parametros_globales');
     
     for (const row of rows) {
-        await redisClient.set(row.nombre_parametro, row.valor);
+        await redisClient.set(row.nombre, row.valor);
     }
     console.log('✅ Parámetros Globales cargados a Redis.');
 };
