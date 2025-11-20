@@ -17,7 +17,7 @@ WORKDIR /app
 # Copia las dependencias instaladas de la etapa de build
 COPY --from=installer /app/node_modules ./node_modules
 
-# Copia el código fuente del microservicio (security_server.js)
+# Copia el código fuente del microservicio (correos_server.js)
 COPY . .
 
 # Expone el puerto 3001 (leído desde el .env y usado en el servidor Hapi)
@@ -25,4 +25,4 @@ EXPOSE 3002
 
 # Comando para iniciar el microservicio
 # El host 0.0.0.0 ya está configurado en el código para escuchar dentro del contenedor
-CMD ["node", "security_server.js"]
+CMD ["node", "correos_server.js"]

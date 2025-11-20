@@ -1,50 +1,70 @@
 'use strict';
 
+require('dotenv').config({ path: '../.env' }); // Carga variables si lo corres local
 const Hapi = require('@hapi/hapi');
 const mysql = require('mysql2/promise');
 const amqp = require('amqplib'); 
 
-// --- CONFIGURACIÓN DE CONEXIÓN ---
+// --- CONFIGURACIÓN DE CONEXIÓN MYSQL (Adaptada para Docker) ---
 const CORREOS_DB_CONFIG = {
-    host: 'localhost',
-    user: 'root', 
-    password: '', 
-    database: 'correosDB', // Base de datos privada del MS Correos
-    port: 8080 
+    host: process.env.MYSQL_HOST || 'ms-mysql',
+    user: process.env.MYSQL_USER || 'root', 
+    password: process.env.MYSQL_PASSWORD || 'root_secret_password', 
+    database: 'correosDB',
+    port: 3306 
 };
 
-const RABBITMQ_URI = 'amqp://localhost';
+// --- CONFIGURACIÓN RABBITMQ ---
+const RABBITMQ_URI = process.env.RABBITMQ_HOST || 'amqp://guest:guest@ms-rabbitmq:5672';
 const CORREO_QUEUE = 'cola_correos';
 
 let dbConnectionCorreos;
+let rabbitMqChannel; // Declaración global para el canal
 
 /**
- * Función que inicia el consumidor de RabbitMQ para procesar órdenes de correo.
+ * Función de reintento para conectar a RabbitMQ
+ */
+const connectRabbitMQ = async (maxRetries = 5, delay = 5000) => {
+    for (let i = 0; i < maxRetries; i++) {
+        try {
+            console.log(`🔌 Intento ${i + 1}/${maxRetries}: Conectando a RabbitMQ...`);
+            const connection = await amqp.connect(RABBITMQ_URI); 
+            const channel = await connection.createChannel();
+            console.log('✅ Conexión a RabbitMQ exitosa.');
+            return channel;
+        } catch (error) {
+            if (i === maxRetries - 1) {
+                // Si es el último intento, lanza el error fatal
+                throw new Error(`Fallo de conexión a RabbitMQ tras ${maxRetries} intentos.`);
+            } 
+            console.log(`❌ Falló la conexión a RabbitMQ. Reintentando en ${delay / 1000}s...`);
+            await new Promise(resolve => setTimeout(resolve, delay)); // Espera 5 segundos
+        }
+    }
+};
+
+
+/**
+ * Función que inicia el consumidor de RabbitMQ
  */
 const startConsumer = async (channel) => {
     await channel.assertQueue(CORREO_QUEUE, { durable: true });
     
-    console.log(`👂 Esperando mensajes en la cola: ${CORREO_QUEUE}. Presiona CTRL+C para salir.`);
+    console.log(`👂 Esperando mensajes en la cola: ${CORREO_QUEUE}`);
 
-    // Establece el consumidor
     channel.consume(CORREO_QUEUE, async (msg) => {
         if (msg !== null) {
-            
             try {
                 const orden = JSON.parse(msg.content.toString());
                 console.log('📬 Mensaje recibido:', orden);
                 
-                // ⚠️ CORRECCIÓN CLAVE para el TypeError: 
-                // Aseguramos que no haya valores 'undefined'. Si falta un campo en la orden,
-                // usamos 'null' para MySQL (que sí acepta valores null en la DB si la columna lo permite).
-                // También aseguramos que clienteId sea un número.
+                // Preparamos datos manejando nulos
                 const clienteId = orden.clienteId ? Number(orden.clienteId) : null;
                 const nombres = orden.nombres || null;
                 const email = orden.email || null;
                 const motivo = orden.motivo || null;
                 
-                // 3.2, 3.3: Registrar la información en la tabla de correos enviados.
-                // Usamos la consulta optimizada de 4 campos que recibimos.
+                // Guardamos en MySQL
                 const query = `
                     INSERT INTO correos_enviados (cliente_id, nombres, email_destino, motivo)
                     VALUES (?, ?, ?, ?)
@@ -54,24 +74,22 @@ const startConsumer = async (channel) => {
                     clienteId, nombres, email, motivo
                 ]);
                 
-                console.log(`Registro de correo exitoso para Cliente ID: ${clienteId}`);
+                console.log(`✅ Correo registrado en BD para Cliente ID: ${clienteId}`);
                 
-                // Reconoce el mensaje para que RabbitMQ lo elimine de la cola
+                // Confirmamos a RabbitMQ que el mensaje se procesó
                 channel.ack(msg);
                 
             } catch (error) {
-                // Si la consulta falla (ej. error de DB o de sintaxis)
-                console.error('❌ Error al procesar o registrar correo en MySQL:', error);
-                
-                // ⚠️ Manejo de error: Rechaza el mensaje y lo devuelve a la cola (nack) para reintento.
-                // Esto detiene el reintento inmediato que causaba el "ciclo infinito".
-                channel.nack(msg); 
+                console.error('❌ Error al registrar correo:', error.message);
+                // Rechazamos el mensaje (nack) para que se reencole y se intente después
+                channel.nack(msg, false, true); 
             }
         }
     });
 };
 
 const init = async () => {
+    
     // 1. Conexión a MySQL
     try {
         dbConnectionCorreos = await mysql.createConnection(CORREOS_DB_CONFIG);
@@ -81,30 +99,27 @@ const init = async () => {
         process.exit(1);
     }
     
-    // 2. Conexión y Consumidor de RabbitMQ
+    // 2. Conexión a RabbitMQ (USANDO REINTENTOS)
     try {
-        const connection = await amqp.connect(RABBITMQ_URI);
-        const channel = await connection.createChannel();
-        console.log('✅ Conexión a RabbitMQ exitosa.');
-        
-        // Inicia el consumidor
-        await startConsumer(channel);
+        rabbitMqChannel = await connectRabbitMQ(); // <- Llamamos a la función con reintentos
+        await startConsumer(rabbitMqChannel);
 
     } catch (error) {
-        console.error('❌ Error al conectar o iniciar consumidor de RabbitMQ:', error.message);
+        // Este catch solo se activa si fallaron todos los 5 reintentos.
+        console.error('❌ Error fatal: No se pudo conectar a RabbitMQ.', error.message);
+        process.exit(1); 
     }
 
-    // 3. Configuración mínima del Servidor Hapi (Solo para levantarlo)
+    // 3. Servidor Hapi (Para mantener el contenedor vivo y healthchecks)
     const server = Hapi.server({
         port: 3002, 
-        host: 'localhost'
+        host: '0.0.0.0'
     });
     
     await server.start();
-    console.log(`🚀 Microservicio de Correos corriendo en: ${server.info.uri} (Consumidor Activo)`);
+    console.log(`🚀 Microservicio de Correos corriendo en: ${server.info.uri}`);
 };
 
-// Manejo de errores de rechazo no controlado y ejecución
 process.on('unhandledRejection', (err) => {
     console.error('Unhandled Rejection:', err);
     process.exit(1);

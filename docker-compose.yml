@@ -14,12 +14,22 @@ services:
     container_name: ms-mysql
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_DATABASE: clientesDB # Puedes crear todas las DBs aquí o manejar la creación inicial en el entrypoint
+      MYSQL_DATABASE: clientes_db # Puedes crear todas las DBs aquí o manejar la creación inicial en el entrypoint
     volumes:
       - mysql-data:/var/lib/mysql
+    ports:
+      - "8081:3306"
     networks:
       - ms-network
     restart: always
+    # --- AGREGA ESTO DESDE AQUÍ ---
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", "-u", "root", "-p${MYSQL_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    # --- HASTA AQUÍ ---
 
   ms-redis:
     image: redis:6.2-alpine
@@ -55,6 +65,7 @@ services:
         condition: service_started
 
   ms-clients:
+  
     build: 
       context: ./clientes-ms-backend
       dockerfile: Dockerfile

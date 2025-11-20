@@ -16,5 +16,13 @@
     "dotenv": "^17.2.3",
     "joi": "^18.0.1",
     "mysql2": "^3.15.3"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kitikazis/Prueba-Tecnica.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kitikazis/Prueba-Tecnica/issues"
+  },
+  "homepage": "https://github.com/kitikazis/Prueba-Tecnica#readme"
 }
