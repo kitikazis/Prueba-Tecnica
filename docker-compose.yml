@@ -110,9 +110,11 @@ services:
       dockerfile: Dockerfile
     container_name: ms-frontend
     ports:
-      - "4200:4200" # El frontend se accede por el puerto 80 (HTTP estándar)
+      - "4200:4200" # Mapea puerto ng serve (dev)
     networks:
       - ms-network
+    # Sin volúmenes; la imagen contiene el código
     
+# --- DEFINICIÓN GLOBAL DE VOLÚMENES NOMBRADOS (SOLO MAPEOS) ---
 volumes:
-  mysql-data:
+  mysql-data: {}
