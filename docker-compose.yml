@@ -110,7 +110,7 @@ services:
       dockerfile: Dockerfile
     container_name: ms-frontend
     ports:
-      - "80:80" # El frontend se accede por el puerto 80 (HTTP estándar)
+      - "4200:4200" # El frontend se accede por el puerto 80 (HTTP estándar)
     networks:
       - ms-network
     
